@@ -16,13 +16,16 @@ const setPercentages = (element, data) => {
   return data > 0 ? element.classList.add('positive') : element.classList.add('negative');
 }; // setPercentages
 
-const insertNewCryptoURL = (cryptoSymbol) => {
-  const cryptos = JSON.parse(decodeURI(document.location.href.split('?q=')[1]));
-  const baseURL = document.location.href.split('?q=')[0];
-  cryptos.data.push(cryptoSymbol);
+const refreshURL = () => {
+  // retrieve all crypto currently displayed in mainHolder
+  const data = Array.from(document.querySelector('.mainHolder').childNodes).reduce((accumulator, crypto) => {
+    accumulator.push(crypto.firstChild.querySelector('.cryptoSymbol').firstChild.innerHTML);
+    return accumulator;
+  }, []); // reduce
 
-  return window.history.pushState({}, '', `${ baseURL }?q=${ JSON.stringify(cryptos) }`);
-}; // insertNewCryptoURL
+  const baseURL = document.location.href.split('?q=')[0];
+  return window.history.pushState({}, '', `${ baseURL }?q=${ JSON.stringify({ 'data': data }) }`);
+}; // refreshURL
 
 const getCurrentTime = () => {
   const d = new Date();
@@ -62,17 +65,6 @@ const refreshInformation = () => {
 
   return document.getElementById('lastRefreshed').innerHTML = getCurrentTime();
 }; // refreshInformation
-
-const refreshURL = () => {
-  // retrieve all crypto currently displayed in mainHolder
-  const data = Array.from(document.querySelector('.mainHolder').childNodes).reduce((accumulator, crypto) => {
-    accumulator.push(crypto.firstChild.querySelector('.cryptoSymbol').firstChild.innerHTML);
-    return accumulator;
-  }, []); // reduce
-
-  const baseURL = document.location.href.split('?q=')[0];
-  return window.history.pushState({}, '', `${ baseURL }?q=${ JSON.stringify({ 'data': data }) }`);
-}; // refreshURL
 
 const setElementsHTML = (crypto) => {
   const appendElement = (container, elementTag, classNames) => {
@@ -154,7 +146,7 @@ const getCryptoValues = (cryptoId) => {
     })
     .then((d) => {
       setCryptoValues(d[0]);
-      return insertNewCryptoURL(d[0].symbol);
+      return refreshURL();
     });
 }; // getCryptoValues
 
