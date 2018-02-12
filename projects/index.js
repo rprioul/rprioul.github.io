@@ -174,7 +174,10 @@ const intializeSearchAutoComplete = (data) => {
 
 const initializeDashboard = () => {
   // Retrieve list of cryptocurrency symbols
-  const savedCryptos = JSON.parse(decodeURI(document.location.href.split('?q=')[1]));
+  let savedCryptos = {data: []};
+  if (document.location.href.split('?q=')[0] !== document.location.href ) {
+    savedCryptos = JSON.parse(decodeURI(document.location.href.split('?q=')[1])) || [];
+  }
 
   // Populate with cryptocurrencies found in URL
   fetch('https://api.coinmarketcap.com/v1/ticker/?limit=0&convert=EUR')
