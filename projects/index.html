@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Cryptocurrency dashboard</title>
+		<link rel="stylesheet" type="text/css" href="index.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	</head>
+	<body>
+		<div class="header">
+			<div class="refreshContainer">
+				<button type="submit" id="cryptoRefreshButton"><i class="fa fa-refresh"></i></button>
+				<label for="lastRefreshed" class="lastRefreshedLabel">Last&nbsp;refreshed&nbsp;:</label>
+				<div id="lastRefreshed"></div>
+			</div>
+			<div class="searchContainer">
+				<input type="text" id="cryptoSearchField" class="cryptoSearch" placeholder="Add a crypto..">
+				<button type="submit" id="cryptoSearchButton"><i class="fa fa-plus-square"></i></button>
+			</div>
+		</div>
+		<div class="mainHolder"></div>
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+		<script src="index.js"></script>
+	</body>
+</html>
