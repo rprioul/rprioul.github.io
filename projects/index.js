@@ -48,6 +48,7 @@ const refreshInformation = () => {
 
   fetch('https://api.coinmarketcap.com/v1/ticker/?limit=0&convert=EUR')
     .then((r) => {
+      if (!r.ok) throw Error(r.statusText);
       return r.json();
     })
     .then((d) => {
@@ -142,18 +143,15 @@ const setCryptoValues = (data) => {
 const getCryptoValues = (cryptoId) => {
   fetch(`https://api.coinmarketcap.com/v1/ticker/${ cryptoId }/?convert=EUR`)
     .then((r) => {
+      if (!r.ok) throw Error(r.statusText);
       return r.json();
-    })
+    }) // then
     .then((d) => {
+      setElementsHTML(cryptoId);
       setCryptoValues(d[0]);
       return refreshURL();
-    });
+    }); // then
 }; // getCryptoValues
-
-insertCrypto = (cryptoId) => {
-  setElementsHTML(cryptoId);
-  return getCryptoValues(cryptoId);
-}; // insertCrypto
 
 const intializeSearchAutoComplete = (data) => {
   return $(() => {
@@ -174,6 +172,7 @@ const initializeDashboard = () => {
   // Populate with cryptocurrencies found in URL
   fetch('https://api.coinmarketcap.com/v1/ticker/?limit=0&convert=EUR')
     .then((r) => {
+      if (!r.ok) throw Error(r.statusText);
       return r.json();
     })
     .then((d) => {
@@ -204,7 +203,7 @@ const initializeDashboard = () => {
 
   // add event listener to insert new cryptos
   document.getElementById('cryptoSearchButton').addEventListener('click', () => {
-    return insertCrypto(document.getElementById('cryptoSearchField').value);
+    return getCryptoValues(document.getElementById('cryptoSearchField').value);
   }); // addEventListener
 
   // add event lsitener to refresh the displayed information
