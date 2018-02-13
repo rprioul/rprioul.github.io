@@ -164,9 +164,9 @@ const intializeSearchAutoComplete = (data) => {
 
 const initializeDashboard = () => {
   // Retrieve list of cryptocurrency symbols
-  let savedCryptos = {data: []};
-  if (document.location.href.split('?q=')[0] !== document.location.href ) {
-    savedCryptos = JSON.parse(decodeURI(document.location.href.split('?q=')[1])) || [];
+  let savedCryptos = { data: [] };
+  if (document.location.href.split('?q=')[0] !== document.location.href) {
+    savedCryptos = JSON.parse(decodeURI(document.location.href.split('?q=')[1]));
   } else {
     window.history.pushState({}, '', `${ document.location.href }?q=${ JSON.stringify(savedCryptos) }`);
   }
@@ -214,12 +214,12 @@ const initializeDashboard = () => {
   }); // addEventListener
 
   return document.getElementById('cryptoInfoButton').addEventListener('click', () => {
-    if([...document.getElementsByClassName('infoBubble')][0].style.display === '') {
-      return [...document.getElementsByClassName('infoBubble')][0].style.display = 'block';
+    if ([ ...document.getElementsByClassName('infoBubble') ][0].style.display === '') {
+      return [ ...document.getElementsByClassName('infoBubble') ][0].style.display = 'block';
     } else {
-      return [...document.getElementsByClassName('infoBubble')][0].style.display = '';
+      return [ ...document.getElementsByClassName('infoBubble') ][0].style.display = '';
     }
-  })
+  }); // addEventListener
 }; // initializeDashboard
 
 initializeDashboard();
