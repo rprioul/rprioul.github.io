@@ -167,6 +167,8 @@ const initializeDashboard = () => {
   let savedCryptos = {data: []};
   if (document.location.href.split('?q=')[0] !== document.location.href ) {
     savedCryptos = JSON.parse(decodeURI(document.location.href.split('?q=')[1])) || [];
+  } else {
+    window.history.pushState({}, '', `${ document.location.href }?q=${ JSON.stringify(savedCryptos) }`);
   }
 
   // Populate with cryptocurrencies found in URL
@@ -207,9 +209,17 @@ const initializeDashboard = () => {
   }); // addEventListener
 
   // add event lsitener to refresh the displayed information
-  return document.getElementById('cryptoRefreshButton').addEventListener('click', () => {
+  document.getElementById('cryptoRefreshButton').addEventListener('click', () => {
     return refreshInformation();
   }); // addEventListener
+
+  return document.getElementById('cryptoInfoButton').addEventListener('click', () => {
+    if([...document.getElementsByClassName('infoBubble')][0].style.display === '') {
+      return [...document.getElementsByClassName('infoBubble')][0].style.display = 'block';
+    } else {
+      return [...document.getElementsByClassName('infoBubble')][0].style.display = '';
+    }
+  })
 }; // initializeDashboard
 
 initializeDashboard();
