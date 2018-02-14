@@ -131,7 +131,7 @@ initializeDashboard();
 const refreshURL = () => {
   // retrieve all crypto currently displayed in mainHolder
   const data = Array.from(document.querySelector('.mainHolder').childNodes).reduce((accumulator, crypto) => {
-    accumulator.push(crypto.firstChild.querySelector('.cryptoSymbol').firstChild.innerHTML);
+    accumulator.push(crypto.firstChild.nextSibling.querySelector('.cryptoSymbol').firstChild.innerHTML);
     return accumulator;
   }, []); // reduce
 
@@ -173,19 +173,19 @@ const setElementsHTML = (crypto) => {
   }; // appendElementWithReturn
 
   const appendCryptoMainInfo = (cryptoHolder) => {
-    // append upper part of cryptoHolder
-    const cryptoMainInfo = appendElementWithReturn(cryptoHolder, 'div', [ 'cryptoMainInfo' ]);
-
     // append close Button and its event handler
-    const button = document.createElement('button');// type="submit" id="cryptoSearchButton">
+    const button = document.createElement('button');
     button.type = 'submit';
     button.classList.add(...[ 'cryptoCloseButton', 'hidden' ]);
-    cryptoMainInfo.append(button);
+    cryptoHolder.append(button);
     button.addEventListener('click', (evt) => {
-      evt.target.parentNode.parentNode.parentNode.remove();
+      evt.target.parentNode.parentNode.remove();
       return refreshURL();
     }); // addEventListener
     appendElement(button, 'i', [ 'fa', 'fa-times-circle' ]);
+
+    // append upper part of cryptoHolder
+    const cryptoMainInfo = appendElementWithReturn(cryptoHolder, 'div', [ 'cryptoMainInfo' ]);
 
     // Append logo, name, symbol and value
     appendElement(cryptoMainInfo, 'img', [ 'cryptoLogo' ]);
@@ -325,7 +325,9 @@ const hideSuggestions = () => {
 
 const initializeSortable = () => {
   // add possibility to drag elements
-  const sortable = new window.Draggable.Sortable(document.querySelectorAll('.mainHolder'));
+  const sortable = new window.Draggable.Sortable(document.querySelectorAll('.mainHolder'), {
+    handle: '.cryptoMainInfo',
+  });
 
   sortable.on('sortable:stop', () => {
     // need to set a small timeout before refreshing URLs otherwise, it appears twice in data ...
