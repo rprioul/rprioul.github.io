@@ -72,6 +72,22 @@ button:hover {
     cursor: pointer;
 }
 
+.dropdownResult {
+    display: none;
+    width: 160px;
+    padding: 5px;
+    background-color: #ffffff;
+    border-style: none solid solid solid;
+    border-color: black;
+    border-width: 1px;
+    cursor: pointer;
+    color: black;
+}
+
+.dropdownResult:hover {
+    background-color: #bfbfbf;
+} 
+
 .ui-autocomplete {
     max-height: 50vh;
     overflow-y: auto;
@@ -258,10 +274,12 @@ button:hover {
     border: 2px solid black;
     border-radius: 10px;
     display: none;
+    overflow: auto;
 }
 
 .infoBubble > * {
     color: black;
+    padding: 5px;
 }
 
 .infoTitleContainer {

@@ -1,5 +1,7 @@
 /* eslint no-undef: 0 */
 
+const availableCryptos = [];
+
 const moneyFormatter = (amount, currency = '&euro;') => {
   return `${ currency }${ amount }`;
 }; // moneyFormatter
@@ -15,6 +17,12 @@ const setPercentages = (element, data) => {
   element.innerHTML = `<p>${ percentFormatter(data) }</p>`;
   return data > 0 ? element.classList.add('positive') : element.classList.add('negative');
 }; // setPercentages
+
+const hideSuggestions = () => {
+  return Array.from(document.getElementsByClassName('dropdownResult')).map((result) => {
+    return result.style.display = '';
+  });
+}
 
 const refreshURL = () => {
   // retrieve all crypto currently displayed in mainHolder
@@ -32,8 +40,9 @@ const getCurrentTime = () => {
   const hours = `0${ d.getHours() }`.slice(-2);
   const minutes = `0${ d.getMinutes() }`.slice(-2);
   const seconds = `0${ d.getSeconds() }`.slice(-2);
+
   return `<p>${ hours }:${ minutes }:${ seconds }</p>`;
-};
+}; // getCurrentTime
 
 const updateCryptoValues = (data) => {
   document.querySelector(`#${ data.id }.cryptoValue`).firstChild.innerHTML = moneyFormatter(parseFloat(data.price_eur).toFixed(4));
@@ -124,7 +133,7 @@ const setElementsHTML = (crypto) => {
   }; // appendCryptoMainInfo
 
   const cryptoHolder = appendElementWithReturn(document.querySelector('.mainHolder'), 'div', [ 'cryptoHolder' ]);
-  cryptoHolder.classList.add('sortable');
+  cryptoHolder.classList.add('draggable-source');
   appendCryptoMainInfo(cryptoHolder);
   return appendCryptoVariation(cryptoHolder);
 }; // setElementsHTML
@@ -154,11 +163,26 @@ const getCryptoValues = (cryptoId) => {
 }; // getCryptoValues
 
 const intializeSearchAutoComplete = (data) => {
-  return $(() => {
-    const availableTags = data.map((elt) => {
-      return elt.id;
-    });
-    return $('.cryptoSearch').autocomplete({ source: availableTags });
+  data.map((elt) => {
+    return availableCryptos.push(elt.id);
+  }); // data.map
+
+  document.getElementById('cryptoSearchField').addEventListener('keyup', (evt) => {
+    // check if search area is not empty
+    if (evt.target.value !== '') {
+      const suggestions = availableCryptos
+        .filter((crypto) => {
+          return crypto.includes(evt.target.value);
+        })
+        .slice(0,10);
+
+      Array.from(document.getElementsByClassName('dropdownResult')).map((result, index) => {
+        result.innerHTML = suggestions[index] ? suggestions[index] : '';
+        return result.style.display = suggestions[index] ? 'block' : '';
+      });
+    } else {
+      return hideSuggestions();
+    }
   });
 }; // intializeSearchAutoComplete
 
@@ -194,25 +218,39 @@ const initializeDashboard = () => {
     });
 
   // add possibility to drag elements
-  $('.mainHolder').sortable({
-    appendTo: document.body,
-    stop: () => {
+  const sortable = new window.Draggable.Sortable(document.querySelectorAll('.mainHolder'));
+
+  sortable.on('sortable:stop', () => {
+    // need to set a small timeout before refreshing URLs otherwise, it appears twice in data ...
+    // Maybe find a more appropriated workaround later, but for now it's doing its job
+    return setTimeout(() => {
       return refreshURL();
-    },
+    }, 10);
   });
 
   document.getElementById('lastRefreshed').innerHTML = getCurrentTime();
 
   // add event listener to insert new cryptos
   document.getElementById('cryptoSearchButton').addEventListener('click', () => {
-    return getCryptoValues(document.getElementById('cryptoSearchField').value);
+    getCryptoValues(document.getElementById('cryptoSearchField').value);
+    hideSuggestions();
+    return document.getElementById('cryptoSearchField').value = '';
   }); // addEventListener
 
-  // add event lsitener to refresh the displayed information
+  // add event listener to refresh the displayed information
   document.getElementById('cryptoRefreshButton').addEventListener('click', () => {
     return refreshInformation();
   }); // addEventListener
 
+  // add event listener to each suggestion link
+  Array.from(document.getElementsByClassName('dropdownResult')).map((res) => {
+    return res.addEventListener('click', (evt) => {
+      document.getElementById('cryptoSearchField').value = evt.target.innerHTML;
+      return hideSuggestions();
+    });
+  })
+
+  // add event listener to display information about the dashboard
   return document.getElementById('cryptoInfoButton').addEventListener('click', () => {
     if ([ ...document.getElementsByClassName('infoBubble') ][0].style.display === '') {
       return [ ...document.getElementsByClassName('infoBubble') ][0].style.display = 'block';
