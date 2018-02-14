@@ -1,132 +1,4 @@
-/******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
-/******/ })
-/************************************************************************/
-/******/ ([
-/* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ui_js__ = __webpack_require__(1);
-
-
-/* eslint no-undef: 0 */
-
-const initializeDashboard = () => {
-  // Retrieve list of cryptocurrency symbols
-  let savedCryptos = { data: [] };
-  if (document.location.href.split('?q=')[0] !== document.location.href) {
-    savedCryptos = JSON.parse(decodeURI(document.location.href.split('?q=')[1]));
-  } else {
-    window.history.pushState({}, '', `${ document.location.href }?q=${ JSON.stringify(savedCryptos) }`);
-  }
-
-  // Populate with cryptocurrencies found in URL
-  fetch('https://api.coinmarketcap.com/v1/ticker/?limit=0&convert=EUR')
-    .then((r) => {
-      if (!r.ok) throw Error(r.statusText);
-      return r.json();
-    })
-    .then((d) => {
-      Object(__WEBPACK_IMPORTED_MODULE_0__ui_js__["a" /* initializeSearchAutoComplete */])(d);
-
-      const preSelectedCryptos = d.filter((elt) => {
-        return savedCryptos.data.includes(elt.symbol);
-      });
-
-      return savedCryptos.data.map((symbol) => {
-        const crypto = preSelectedCryptos.filter((elt) => {
-          return elt.symbol === symbol;
-        });
-        Object(__WEBPACK_IMPORTED_MODULE_0__ui_js__["e" /* setElementsHTML */])(crypto[0].id);
-        return Object(__WEBPACK_IMPORTED_MODULE_0__ui_js__["d" /* setCryptoValues */])(crypto[0]);
-      }); // savedCryptos.data.map
-    });
-
-  Object(__WEBPACK_IMPORTED_MODULE_0__ui_js__["b" /* initializeSortable */])();
-
-  return Object(__WEBPACK_IMPORTED_MODULE_0__ui_js__["c" /* initializeUI */])();
-}; // initializeDashboard
-
-initializeDashboard();
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return setElementsHTML; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return setCryptoValues; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return initializeSearchAutoComplete; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return initializeUI; });
-/* unused harmony export updateCryptoValues */
-/* unused harmony export hideSuggestions */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return initializeSortable; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util_js__ = __webpack_require__(2);
-
+import { moneyFormatter, setPercentages, getCurrentTime } from './util.js';
 
 const refreshURL = () => {
   // retrieve all crypto currently displayed in mainHolder
@@ -219,10 +91,10 @@ const setCryptoValues = (data) => {
   document.querySelector(`#${ data.id }.cryptoLogo`).src = imgURL;
   document.querySelector(`#${ data.id }.cryptoName`).innerHTML = `<p>${ data.name }</p>`;
   document.querySelector(`#${ data.id }.cryptoSymbol`).innerHTML = `<p>${ data.symbol }</p>`;
-  document.querySelector(`#${ data.id }.cryptoValue`).innerHTML = `<p>${ Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["b" /* moneyFormatter */])(parseFloat(data.price_eur).toFixed(4)) }</p>`;
-  Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* setPercentages */])(document.querySelector(`#${ data.id }.cryptoVar1h`), data.percent_change_1h);
-  Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* setPercentages */])(document.querySelector(`#${ data.id }.cryptoVar24h`), data.percent_change_24h);
-  Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* setPercentages */])(document.querySelector(`#${ data.id }.cryptoVar7d`), data.percent_change_7d);
+  document.querySelector(`#${ data.id }.cryptoValue`).innerHTML = `<p>${ moneyFormatter(parseFloat(data.price_eur).toFixed(4)) }</p>`;
+  setPercentages(document.querySelector(`#${ data.id }.cryptoVar1h`), data.percent_change_1h);
+  setPercentages(document.querySelector(`#${ data.id }.cryptoVar24h`), data.percent_change_24h);
+  setPercentages(document.querySelector(`#${ data.id }.cryptoVar7d`), data.percent_change_7d);
 }; // getCryptoValues
 
 const initializeSearchAutoComplete = (data) => {
@@ -274,10 +146,10 @@ const initializeUI = () => {
         }); // savedCryptos.data.map
       });
 
-    return document.getElementById('lastRefreshed').innerHTML = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["a" /* getCurrentTime */])();
+    return document.getElementById('lastRefreshed').innerHTML = getCurrentTime();
   }; // refreshInformation
 
-  document.getElementById('lastRefreshed').innerHTML = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["a" /* getCurrentTime */])();
+  document.getElementById('lastRefreshed').innerHTML = getCurrentTime();
 
   // add event listener to insert new cryptos
   document.getElementById('cryptoSearchButton').addEventListener('click', () => {
@@ -311,10 +183,10 @@ const initializeUI = () => {
 }; // initializeUI
 
 const updateCryptoValues = (data) => {
-  document.querySelector(`#${ data.id }.cryptoValue`).firstChild.innerHTML = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["b" /* moneyFormatter */])(parseFloat(data.price_eur).toFixed(4));
-  Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* setPercentages */])(document.querySelector(`#${ data.id }.cryptoVar1h`), data.percent_change_1h);
-  Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* setPercentages */])(document.querySelector(`#${ data.id }.cryptoVar24h`), data.percent_change_24h);
-  return Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* setPercentages */])(document.querySelector(`#${ data.id }.cryptoVar7d`), data.percent_change_7d);
+  document.querySelector(`#${ data.id }.cryptoValue`).firstChild.innerHTML = moneyFormatter(parseFloat(data.price_eur).toFixed(4));
+  setPercentages(document.querySelector(`#${ data.id }.cryptoVar1h`), data.percent_change_1h);
+  setPercentages(document.querySelector(`#${ data.id }.cryptoVar24h`), data.percent_change_24h);
+  return setPercentages(document.querySelector(`#${ data.id }.cryptoVar7d`), data.percent_change_7d);
 }; // updateCryptoValues
 
 const hideSuggestions = () => {
@@ -336,43 +208,12 @@ const initializeSortable = () => {
   });
 }; // initializeSortable
 
-
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return moneyFormatter; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return setPercentages; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getCurrentTime; });
-const moneyFormatter = (amount, currency = '&euro;') => {
-  return `${ currency }${ amount }`;
-}; // moneyFormatter
-
-const percentFormatter = (value) => {
-  return `${ value }%`;
-}; // percentFormatter
-
-const setPercentages = (element, data) => {
-  // clean out positive or negative class if present
-  element.classList.remove(...[ 'positive', 'negtive' ]);
-
-  element.innerHTML = `<p>${ percentFormatter(data) }</p>`;
-  return data > 0 ? element.classList.add('positive') : element.classList.add('negative');
-}; // setPercentages
-
-const getCurrentTime = () => {
-  const d = new Date();
-  const hours = `0${ d.getHours() }`.slice(-2);
-  const minutes = `0${ d.getMinutes() }`.slice(-2);
-  const seconds = `0${ d.getSeconds() }`.slice(-2);
-
-  return `<p>${ hours }:${ minutes }:${ seconds }</p>`;
-}; // getCurrentTime
-
-
-
-/***/ })
-/******/ ]);
+export {
+  setElementsHTML,
+  setCryptoValues,
+  initializeSearchAutoComplete,
+  initializeUI,
+  updateCryptoValues,
+  hideSuggestions,
+  initializeSortable,
+};
