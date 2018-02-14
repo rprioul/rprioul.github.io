@@ -245,7 +245,8 @@ const initializeDashboard = () => {
   // add event listener to each suggestion link
   Array.from(document.getElementsByClassName('dropdownResult')).map((res) => {
     return res.addEventListener('click', (evt) => {
-      document.getElementById('cryptoSearchField').value = evt.target.innerHTML;
+      getCryptoValues(evt.target.innerHTML);
+      document.getElementById('cryptoSearchField').value = '';
       return hideSuggestions();
     });
   })
