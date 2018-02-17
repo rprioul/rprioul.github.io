@@ -282,7 +282,9 @@ const setCryptoValues = (data) => {
 const initializeSearchAutoComplete = (data) => {
   const availableCryptos = [];
 
-  data.map((elt) => {
+  data.sort((crypto1, crypto2) => {
+    return crypto2.price_eur - crypto1.price_eur;
+  }).map((elt) => {
     return availableCryptos.push(elt.id);
   }); // data.map
 
