@@ -244,7 +244,7 @@ const setElementsHTML = (crypto) => {
     appendElementWithReturn(cryptoVar7dHolder, 'div', [ 'cryptoVar7dLabel' ]).innerHTML = '7d :';
     appendElement(cryptoVar7dHolder, 'div', [ 'cryptoVar7d' ]);
     const cryptoGraphHolder = appendElementWithReturn(cryptoVariation, 'div', [ 'cryptoGraphHolder' ]);
-    appendElementWithReturn(cryptoGraphHolder, 'div', [ 'cryptoGraphLabel' ]).innerHTML = '10&nbsp;days evolution';
+    appendElementWithReturn(cryptoGraphHolder, 'div', [ 'cryptoGraphLabel' ]).innerHTML = 'Evolution over 10&nbsp;';
     appendElement(cryptoGraphHolder, 'div', [ 'graphHolder' ]);
   }; // appendCryptoMainInfo
 
@@ -291,7 +291,7 @@ const initializeSearchAutoComplete = (data) => {
     if (evt.target.value !== '') {
       const suggestions = availableCryptos
         .filter((crypto) => {
-          return crypto.includes(evt.target.value);
+          return crypto.includes(evt.target.value.toLowerCase());
         })
         .slice(0,10);
 
