@@ -285,7 +285,7 @@ const initializeSearchAutoComplete = (data) => {
   data.sort((crypto1, crypto2) => {
     return crypto2.price_eur - crypto1.price_eur;
   }).map((elt) => {
-    return availableCryptos.push(elt.id);
+    return availableCryptos.push(`${ elt.id } (${ elt.symbol })`);
   }); // data.map
 
   document.getElementById('cryptoSearchField').addEventListener('keyup', (evt) => {
@@ -293,7 +293,7 @@ const initializeSearchAutoComplete = (data) => {
     if (evt.target.value !== '') {
       const suggestions = availableCryptos
         .filter((crypto) => {
-          return crypto.includes(evt.target.value.toLowerCase());
+          return crypto.toLowerCase().includes(evt.target.value.toLowerCase());
         })
         .slice(0,10);
 
