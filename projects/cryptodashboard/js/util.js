@@ -2,11 +2,12 @@ const moneyFormatter = (amount, currency = '&euro;') => {
   return `${ currency }${ amount }`;
 }; // moneyFormatter
 
-const percentFormatter = (value) => {
-  return `${ value }%`;
-}; // percentFormatter
 
 const setPercentages = (element, data) => {
+  const percentFormatter = (value) => {
+    return `${ value }%`;
+  }; // percentFormatter
+
   // clean out positive or negative class if present
   element.classList.remove(...[ 'positive', 'negtive' ]);
 
