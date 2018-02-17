@@ -80,7 +80,7 @@ const setElementsHTML = (crypto) => {
     appendElementWithReturn(cryptoVar7dHolder, 'div', [ 'cryptoVar7dLabel' ]).innerHTML = '7d :';
     appendElement(cryptoVar7dHolder, 'div', [ 'cryptoVar7d' ]);
     const cryptoGraphHolder = appendElementWithReturn(cryptoVariation, 'div', [ 'cryptoGraphHolder' ]);
-    appendElementWithReturn(cryptoGraphHolder, 'div', [ 'cryptoGraphLabel' ]).innerHTML = 'Evolution over 10&nbsp;';
+    appendElementWithReturn(cryptoGraphHolder, 'div', [ 'cryptoGraphLabel' ]).innerHTML = 'Evolution over 10&nbsp;days';
     appendElement(cryptoGraphHolder, 'div', [ 'graphHolder' ]);
   }; // appendCryptoMainInfo
 
