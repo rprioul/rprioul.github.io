@@ -213,7 +213,7 @@ const setElementsHTML = (crypto) => {
     // append close Button and its event handler
     const button = document.createElement('button');
     button.type = 'submit';
-    button.classList.add(...[ 'cryptoCloseButton', 'hidden' ]);
+    button.classList.add(...[ 'cryptoCloseButton' ]);
     cryptoHolder.append(button);
     button.addEventListener('click', (evt) => {
       evt.target.parentNode.parentNode.remove();
@@ -352,7 +352,7 @@ const initializeUI = () => {
       document.getElementById('cryptoSearchField').value = '';
       return hideSuggestions();
     });
-  })
+  }); // addEventListener
 
   // add event listener to display information about the dashboard
   return document.getElementById('cryptoInfoButton').addEventListener('click', () => {

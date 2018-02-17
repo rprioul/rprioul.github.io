@@ -228,13 +228,6 @@ button:hover {
 
 /* close button */
 
-.hidden {
-    visibility: hidden;
-}
-.cryptoHolder:hover .hidden {
-    visibility: visible;
-}
-
 .cryptoCloseButton {
     float: right;
     margin: 2px;
