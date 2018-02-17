@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -68,8 +68,43 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return htmlMoneyFormatter; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return setPercentages; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getCurrentTime; });
+const htmlMoneyFormatter = (amount, currency = '&euro;') => {
+  return `${ currency }${ amount }`;
+}; // moneyFormatter
+
+const setPercentages = (element, data) => {
+  const percentFormatter = (value) => {
+    return `${ value }%`;
+  }; // percentFormatter
+
+  // clean out positive or negative class if present
+  element.classList.remove(...[ 'positive', 'negtive' ]);
+
+  element.innerHTML = `<p>${ percentFormatter(data) }</p>`;
+  return data > 0 ? element.classList.add('positive') : element.classList.add('negative');
+}; // setPercentages
+
+const getCurrentTime = () => {
+  const d = new Date();
+  const hours = `0${ d.getHours() }`.slice(-2);
+  const minutes = `0${ d.getMinutes() }`.slice(-2);
+  const seconds = `0${ d.getSeconds() }`.slice(-2);
+
+  return `<p>${ hours }:${ minutes }:${ seconds }</p>`;
+}; // getCurrentTime
+
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ui_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ui_js__ = __webpack_require__(2);
 
 
 /* eslint no-undef: 0 */
@@ -114,7 +149,7 @@ initializeDashboard();
 
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -125,7 +160,9 @@ initializeDashboard();
 /* unused harmony export updateCryptoValues */
 /* unused harmony export hideSuggestions */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return initializeSortable; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util_js__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__graphic_js__ = __webpack_require__(3);
+
 
 
 const refreshURL = () => {
@@ -205,7 +242,10 @@ const setElementsHTML = (crypto) => {
     appendElement(cryptoVar24hHolder, 'div', [ 'cryptoVar24h' ]);
     const cryptoVar7dHolder = appendElementWithReturn(cryptoVariation, 'div', [ 'cryptoVar7dHolder' ]);
     appendElementWithReturn(cryptoVar7dHolder, 'div', [ 'cryptoVar7dLabel' ]).innerHTML = '7d :';
-    return appendElement(cryptoVar7dHolder, 'div', [ 'cryptoVar7d' ]);
+    appendElement(cryptoVar7dHolder, 'div', [ 'cryptoVar7d' ]);
+    const cryptoGraphHolder = appendElementWithReturn(cryptoVariation, 'div', [ 'cryptoGraphHolder' ]);
+    appendElementWithReturn(cryptoGraphHolder, 'div', [ 'cryptoGraphLabel' ]).innerHTML = '10&nbsp;days evolution';
+    appendElement(cryptoGraphHolder, 'div', [ 'graphHolder' ]);
   }; // appendCryptoMainInfo
 
   const cryptoHolder = appendElementWithReturn(document.querySelector('.mainHolder'), 'div', [ 'cryptoHolder' ]);
@@ -219,10 +259,24 @@ const setCryptoValues = (data) => {
   document.querySelector(`#${ data.id }.cryptoLogo`).src = imgURL;
   document.querySelector(`#${ data.id }.cryptoName`).innerHTML = `<p>${ data.name }</p>`;
   document.querySelector(`#${ data.id }.cryptoSymbol`).innerHTML = `<p>${ data.symbol }</p>`;
-  document.querySelector(`#${ data.id }.cryptoValue`).innerHTML = `<p>${ Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["b" /* moneyFormatter */])(parseFloat(data.price_eur).toFixed(4)) }</p>`;
+  document.querySelector(`#${ data.id }.cryptoValue`).innerHTML = `<p>${ Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["b" /* htmlMoneyFormatter */])(parseFloat(data.price_eur).toFixed(4)) }</p>`;
   Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* setPercentages */])(document.querySelector(`#${ data.id }.cryptoVar1h`), data.percent_change_1h);
   Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* setPercentages */])(document.querySelector(`#${ data.id }.cryptoVar24h`), data.percent_change_24h);
   Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* setPercentages */])(document.querySelector(`#${ data.id }.cryptoVar7d`), data.percent_change_7d);
+
+  // fetch graph data from another API
+  return fetch(`https://min-api.cryptocompare.com/data/histohour?aggregate=1&e=CCCAGG&extraParams=CryptoCompare&fsym=${ 
+    data.symbol 
+  }&limit=240&tryConversion=false&tsym=EUR`)
+    .then((r) => {
+      return r.json();
+    })
+    .then((d) => {
+      if (d.Response !== 'Success') {
+        return document.querySelector(`.graphHolder#${ data.id }`).innerHTML = `<p>Data non available for ${ data.name }<p>`;
+      }
+      return Object(__WEBPACK_IMPORTED_MODULE_1__graphic_js__["a" /* appendSparkline */])(`.graphHolder#${ data.id }`, d.Data);
+    });
 }; // getCryptoValues
 
 const initializeSearchAutoComplete = (data) => {
@@ -311,7 +365,7 @@ const initializeUI = () => {
 }; // initializeUI
 
 const updateCryptoValues = (data) => {
-  document.querySelector(`#${ data.id }.cryptoValue`).firstChild.innerHTML = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["b" /* moneyFormatter */])(parseFloat(data.price_eur).toFixed(4));
+  document.querySelector(`#${ data.id }.cryptoValue`).firstChild.innerHTML = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["b" /* htmlMoneyFormatter */])(parseFloat(data.price_eur).toFixed(4));
   Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* setPercentages */])(document.querySelector(`#${ data.id }.cryptoVar1h`), data.percent_change_1h);
   Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* setPercentages */])(document.querySelector(`#${ data.id }.cryptoVar24h`), data.percent_change_24h);
   return Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* setPercentages */])(document.querySelector(`#${ data.id }.cryptoVar7d`), data.percent_change_7d);
@@ -342,37 +396,78 @@ const initializeSortable = () => {
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return moneyFormatter; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return setPercentages; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getCurrentTime; });
-const moneyFormatter = (amount, currency = '&euro;') => {
-  return `${ currency }${ amount }`;
-}; // moneyFormatter
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return appendSparkline; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util_js__ = __webpack_require__(0);
 
-const percentFormatter = (value) => {
-  return `${ value }%`;
-}; // percentFormatter
 
-const setPercentages = (element, data) => {
-  // clean out positive or negative class if present
-  element.classList.remove(...[ 'positive', 'negtive' ]);
+const appendSparkline = (elemId, data) => {
 
-  element.innerHTML = `<p>${ percentFormatter(data) }</p>`;
-  return data > 0 ? element.classList.add('positive') : element.classList.add('negative');
-}; // setPercentages
+  const width = 200;
+  const height = 60;
+  const x = d3.scale.linear().range([0.02 * width, 0.98 * width]);
+  const y = d3.scale.linear().range([0.98 * height, 0.02 * height]);
+  const line = d3.svg
+    .line()
+    .interpolate("bundle")
+    .x((d) => {
+      return x(d.time);
+    })
+    .y((d) => {
+      return y(d.close);
+    });
 
-const getCurrentTime = () => {
-  const d = new Date();
-  const hours = `0${ d.getHours() }`.slice(-2);
-  const minutes = `0${ d.getMinutes() }`.slice(-2);
-  const seconds = `0${ d.getSeconds() }`.slice(-2);
+  const drawSparkline = (elemId, data) => {
+    data.forEach((d) => {
+      d.time = +d.time;
+      return d.close = +d.close;
+    });
+    x.domain(d3.extent(data, (d) => {
+      return d.time;
+    }));
+    y.domain(d3.extent(data, (d) => {
+      return d.close;
+    }));
 
-  return `<p>${ hours }:${ minutes }:${ seconds }</p>`;
-}; // getCurrentTime
+    const svg = d3.select(elemId)
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height)
+      .append('g')
+      .attr('transform', 'translate(0, 2)');
+    svg.append('path')
+      .datum(data)
+      .attr('class', 'sparkline')
+      .attr('d', line);
+    svg.append('circle')
+      .attr('class', 'sparkcircleEnd')
+      .attr('cx', x(data[data.length - 1].time))
+      .attr('cy', y(data[data.length - 1].close))
+      .attr('r', 3);
+    svg.append('circle')
+      .attr('class', 'sparkcircleStart')
+      .attr('cx', x(data[0].time))
+      .attr('cy', y(data[0].close))
+      .attr('r', 3);
+    svg.append('text')
+      .attr('class', 'graphValueLabel')
+      .attr('x', x(data[data.length - 1].time))
+      .attr('y', height / 2)
+      .attr('text-anchor', 'end')
+      .text(Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["b" /* htmlMoneyFormatter */])(data[data.length - 1].close, '\u20AC'));
+    svg.append('text')
+      .attr('class', 'graphValueLabel')
+      .attr('x', x(data[0].time))
+      .attr('y', height / 2)
+      .attr('text-anchor', 'start')
+      .text(Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["b" /* htmlMoneyFormatter */])(data[0].close, '\u20AC'));
+  }; // drawSparkline
+
+  return drawSparkline(elemId, data);
+}; // appendSparkline
 
 
 

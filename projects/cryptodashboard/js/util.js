@@ -1,7 +1,6 @@
-const moneyFormatter = (amount, currency = '&euro;') => {
+const htmlMoneyFormatter = (amount, currency = '&euro;') => {
   return `${ currency }${ amount }`;
 }; // moneyFormatter
-
 
 const setPercentages = (element, data) => {
   const percentFormatter = (value) => {
@@ -24,4 +23,4 @@ const getCurrentTime = () => {
   return `<p>${ hours }:${ minutes }:${ seconds }</p>`;
 }; // getCurrentTime
 
-export { moneyFormatter, setPercentages, getCurrentTime };
+export { htmlMoneyFormatter, setPercentages, getCurrentTime };

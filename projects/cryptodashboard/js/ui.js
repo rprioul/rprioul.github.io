@@ -1,4 +1,5 @@
-import { moneyFormatter, setPercentages, getCurrentTime } from './util.js';
+import { htmlMoneyFormatter, setPercentages, getCurrentTime } from './util.js';
+import { appendSparkline } from './graphic.js';
 
 const refreshURL = () => {
   // retrieve all crypto currently displayed in mainHolder
@@ -77,7 +78,10 @@ const setElementsHTML = (crypto) => {
     appendElement(cryptoVar24hHolder, 'div', [ 'cryptoVar24h' ]);
     const cryptoVar7dHolder = appendElementWithReturn(cryptoVariation, 'div', [ 'cryptoVar7dHolder' ]);
     appendElementWithReturn(cryptoVar7dHolder, 'div', [ 'cryptoVar7dLabel' ]).innerHTML = '7d :';
-    return appendElement(cryptoVar7dHolder, 'div', [ 'cryptoVar7d' ]);
+    appendElement(cryptoVar7dHolder, 'div', [ 'cryptoVar7d' ]);
+    const cryptoGraphHolder = appendElementWithReturn(cryptoVariation, 'div', [ 'cryptoGraphHolder' ]);
+    appendElementWithReturn(cryptoGraphHolder, 'div', [ 'cryptoGraphLabel' ]).innerHTML = '10&nbsp;days evolution';
+    appendElement(cryptoGraphHolder, 'div', [ 'graphHolder' ]);
   }; // appendCryptoMainInfo
 
   const cryptoHolder = appendElementWithReturn(document.querySelector('.mainHolder'), 'div', [ 'cryptoHolder' ]);
@@ -91,10 +95,24 @@ const setCryptoValues = (data) => {
   document.querySelector(`#${ data.id }.cryptoLogo`).src = imgURL;
   document.querySelector(`#${ data.id }.cryptoName`).innerHTML = `<p>${ data.name }</p>`;
   document.querySelector(`#${ data.id }.cryptoSymbol`).innerHTML = `<p>${ data.symbol }</p>`;
-  document.querySelector(`#${ data.id }.cryptoValue`).innerHTML = `<p>${ moneyFormatter(parseFloat(data.price_eur).toFixed(4)) }</p>`;
+  document.querySelector(`#${ data.id }.cryptoValue`).innerHTML = `<p>${ htmlMoneyFormatter(parseFloat(data.price_eur).toFixed(4)) }</p>`;
   setPercentages(document.querySelector(`#${ data.id }.cryptoVar1h`), data.percent_change_1h);
   setPercentages(document.querySelector(`#${ data.id }.cryptoVar24h`), data.percent_change_24h);
   setPercentages(document.querySelector(`#${ data.id }.cryptoVar7d`), data.percent_change_7d);
+
+  // fetch graph data from another API
+  return fetch(`https://min-api.cryptocompare.com/data/histohour?aggregate=1&e=CCCAGG&extraParams=CryptoCompare&fsym=${ 
+    data.symbol 
+  }&limit=240&tryConversion=false&tsym=EUR`)
+    .then((r) => {
+      return r.json();
+    })
+    .then((d) => {
+      if (d.Response !== 'Success') {
+        return document.querySelector(`.graphHolder#${ data.id }`).innerHTML = `<p>Data non available for ${ data.name }<p>`;
+      }
+      return appendSparkline(`.graphHolder#${ data.id }`, d.Data);
+    });
 }; // getCryptoValues
 
 const initializeSearchAutoComplete = (data) => {
@@ -183,7 +201,7 @@ const initializeUI = () => {
 }; // initializeUI
 
 const updateCryptoValues = (data) => {
-  document.querySelector(`#${ data.id }.cryptoValue`).firstChild.innerHTML = moneyFormatter(parseFloat(data.price_eur).toFixed(4));
+  document.querySelector(`#${ data.id }.cryptoValue`).firstChild.innerHTML = htmlMoneyFormatter(parseFloat(data.price_eur).toFixed(4));
   setPercentages(document.querySelector(`#${ data.id }.cryptoVar1h`), data.percent_change_1h);
   setPercentages(document.querySelector(`#${ data.id }.cryptoVar24h`), data.percent_change_24h);
   return setPercentages(document.querySelector(`#${ data.id }.cryptoVar7d`), data.percent_change_7d);

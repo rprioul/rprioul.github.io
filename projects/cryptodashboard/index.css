@@ -104,12 +104,13 @@ button:hover {
     grid-gap: 5px;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     margin-top: 60px;
+    margin-bottom: 60px;
 }
 
 .cryptoHolder {
     background-color: white;
     min-width: 280px;
-    height: 120px;
+    height: 190px;
     border: 1px solid black;
     border-radius: 8px;
     margin: 10px;
@@ -122,6 +123,10 @@ button:hover {
 
 .cryptoMainInfo {
     border-bottom: 1px solid lightgrey;
+}
+
+.cryptoVariation {
+    padding-bottom: 0px;
 }
 
 .cryptoMainInfo>*,
@@ -175,6 +180,50 @@ button:hover {
 .positive {
     color: #33cc33;
     font-weight: bold;
+}
+
+.cryptoGraphHolder {
+    border: 1px solid black;
+    display: block;
+    width: 260px;
+    height: 60px;
+    margin: auto;
+    background-color: #ffffcc;
+}
+
+.cryptoGraphLabel {
+    display: inline-block;
+    width: 30px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    float: left;
+}
+
+.graphHolder {
+    display: inline-block;
+    width: 200px;
+    float: right;
+}
+
+.sparkline {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1px;
+}
+
+.sparkcircleEnd {
+  fill: #cc0000;
+  stroke: none;
+}
+
+.sparkcircleStart {
+  fill: #33cc33;
+  stroke: none;
+}
+
+.graphValueLabel {
+    font-size: 11px;
 }
 
 /* close button */
