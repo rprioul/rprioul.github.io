@@ -123,6 +123,7 @@ button:hover {
 
 .cryptoMainInfo {
     border-bottom: 1px solid lightgrey;
+    cursor: pointer;
 }
 
 .cryptoVariation {
@@ -208,8 +209,9 @@ button:hover {
 
 .sparkline {
   fill: none;
-  stroke: #000;
+  stroke: #4d4d4d;
   stroke-width: 1px;
+  opacity: 0.5;
 }
 
 .sparkcircleEnd {
@@ -223,7 +225,7 @@ button:hover {
 }
 
 .graphValueLabel {
-    font-size: 11px;
+    font-size: 12px;
 }
 
 /* close button */
