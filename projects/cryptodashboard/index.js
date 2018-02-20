@@ -350,7 +350,9 @@ const initializeUI = () => {
   // add event listener to each suggestion link
   Array.from(document.getElementsByClassName('dropdownResult')).map((res) => {
     return res.addEventListener('click', (evt) => {
-      getCryptoValues(evt.target.innerHTML);
+      // extract crypto name from suggestion which contains both names and symbol
+      const cryptoName = evt.tar.innerHTML.split(' ')[0];
+      getCryptoValues(cryptoName);
       document.getElementById('cryptoSearchField').value = '';
       return hideSuggestions();
     });
